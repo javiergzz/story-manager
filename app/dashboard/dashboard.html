@@ -1,0 +1,247 @@
+<nav class="red lighten-2">
+  <div class="nav-wrapper">
+    <a href="#" class="brand-logo">
+      <ng-include id="logo" src="'images/logosmall.html'"></ng-include>
+    </a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a href="">Stories</a></li>
+      <li><a onclick="$('#socialMediaModal').openModal();" href="">Socia Media</a></li>
+      <li><a href="">Settings</a></li>
+      <li><a href="">Blog</a></li>
+      <li><a ng-click="SignOut()" href="">Logout {{username}}</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ====================================<TEST BUTTON> ==================================== -->
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+  <a class="btn-floating btn-large green" ng-click="submitTest()">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+<!-- ==================================== </TEST BUTTON> ==================================== -->
+
+<div class="hide-on-large-only">
+  <br>
+  <br>
+  <div class="container">
+    <div class="container">
+      <div class="card">
+        <div class="card-image">
+          <img src="https://simplybuiltprod.s3.amazonaws.com/media/2304/5FRF3xDy3865dd1KqDEkYQ.jpg" alt="OOPS!">
+          <span class="card-title">Oops! You need a bigger screen...</span>
+        </div>
+        <div class="card-content">
+          <p>
+            Our content managing platform will give you visibility of <strong>A LOT</strong> of information, and is thus optimized to work with larger screens. In order to use this right now we suggest you view this on a screen larger than 992px wide.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row hide-on-med-and-down" id="mainRow" infinite-scroll data-collectionKey="bigDashboard" data-ammountToLoad="8">
+  <!-- <div id="bigloader" ng-show="bigloaderanim"><img id="logo-big" src="images/logo-small.png" alt="LivePost"/></div> -->
+  <!-- ========================================= Big Showcase ========================================= -->
+  <div id="showcase" class="col s12 no-padding" ng-if="activeStories.length < 1">
+    <div class="col l3 m6 s12 no-padding" ng-repeat="story in userStories.created.concat(userStories.contributed) | orderBy:'-last_time' | limitTo:collectionLimits['bigDashboard']">
+      <div class="showcase-div hoverable" ng-click="MakeActive(story)" style="background-image: linear-gradient(rgba(233, 233, 233, 0),rgba(33, 33, 33, 0.3), rgba(33, 33, 33, 0.8)),url({{story.posts_picture}}); position:relative">
+        <span class="time badge {{diffTime(story.last_time)}} white-text z-depth-1 right" style="position:relative; right:0px; margin-right:10px;">{{story.last_time | relativeDate}}</span>
+        <br>
+        <span ng-if="showNewUpdates(story.$id)" class="time badge red lighten-1 white-text z-depth-1 right" style="position:relative; right:0px; margin-right:10px;">{{showNewUpdates(story.$id)}} new</span>
+        <br>
+        <h5 class="grey-text text-lighten-3 no-margin showcase-title" style="position:absolute; bottom: 15px; right: 10px">{{story.title}}</h5>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================= Dashboard Columns ========================================= -->
+  <div id="mainDashboard" ng-if="activeStories.length >= 1">
+    <div class="col s10 no-padding" id="mainColumn">
+      <div class="row sortable-container" sv-root sv-part="activeStories" sv-on-sort="doAlert($indexFrom, $indexTo);">
+        <div ng-repeat="post in activeStories" story-scroll data-storyID="{{post[0].$id}}" sv-element class="col maincol center" style="width: {{columnWidth}}%" infinite-scroll data-collectionKey="{{post[0].$id}}" data-ammountToLoad="4">
+          <!-- ========================================= Column Title ========================================= -->
+          <div class="card red lighten-2 white-text story-title-card" style="width: {{columnWidth}}%;  min-width: {{minColumnWidth}}; max-width: {{columnWidth}}%">
+            <div class="card-content center-align row no-margin" ng-click="MakeAvailable(post)">
+            <div class="col s1">
+            	<a sv-handle class="column-handle">
+	              <i class="material-icons right">menu</i>
+	            </a>
+            </div>
+             <div class="col s10">
+             	 <h5 class="no-margin story-title">{{post[0].title | limitTo:20}} {{post[0].title.length > 20? "..." : ""}} &nbsp;</h5><div ng-if="showNewUpdates(post[0].$id)" class="red lighten-1 white-text z-depth-1 counter">&nbsp;{{showNewUpdates(post[0].$id)}} new&nbsp;</div> 	
+             </div>
+             <div class="col s1">
+             	<a class='dropdown-button' href='javascript:void(0);' data-activates='storyMenu{{post[0].timestamp}}' dropdown data-hover="true" data-beloworigin="true" data-alignment="right" data-constrainwidth="false">
+	              <i class="material-icons right">more_vert</i>
+	            </a>
+             </div>
+            </div>
+            
+            <ul id='storyMenu{{post[0].timestamp}}' class='dropdown-content'>
+              <li><a class="grey-text" href="javascript:void(0);" ng-click="setupStoryUpdate(post[0])"><i class="material-icons center blue-text text-lighten-3" style="position:relative; top:3px;">edit</i> Edit Title</a></li>
+              <li><a class="grey-text" href="javascript:void(0);" ng-click="manageCollaborators(post[0])"><i class="material-icons center teal-text text-lighten-3" style="position:relative; top:3px;">people</i> Contributors</a></li>
+              <li><a class="grey-text" href="javascript:void(0);" ng-click="confirmDelete('Story', post)"><i class="material-icons center red-text text-lighten-3" style="position:relative; top:3px;">delete</i> Delete</a></li>
+            </ul>
+          </div>
+          <!-- ========================================= Updates ========================================= -->
+          <div class="container-post" sv-root sv-part="post[1]" sv-on-sort="reorderUpdates($indexFrom, $indexTo, post);">
+            <div sv-element ng-repeat="item in post[1] | reverse | limitTo:collectionLimits[post[0].$id]" class="card no-margin z-depth-0 update-card">
+              <div ng-if="item.message" class="">
+                <span class="time badge {{diffTime(item.timestamp)}} white-text z-depth-1">{{item.timestamp | relativeDate }}</span>
+                <div class="card-content update-content left-align">
+                  <div class="view-sender">
+                    <img ng-src="{{ item.profile_picture || 'https://livepostrocks.s3.amazonaws.com/default_user_profile.png' }}" class="profile-picture">
+                    <p class="sender grey-text valign-wrapper">{{item.sender}}</p>
+                  </div>
+                  <div class="">
+                    <div ng-if="notMedia(item.message)">
+                      <p ng-bind-html=" item.message | linky:'_blank'" class="msg flow-title">{{item.message}}</p>
+                    </div>
+                    <div ng-if="item.message.indexOf('https://livepostrocks.s3.amazonaws.com/images/') != -1">
+                      <img ng-src="{{item.message}}" class="image">
+                    </div>
+                    <div ng-if="item.message.indexOf('https://livepostrocks.s3.amazonaws.com/videos/') != -1">
+                      <video class="video" controls>
+                        <source ng-src="{{trustSrc(item.message)}}">
+                      </video>
+                    </div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                  <div class="col s6 left-align" style="padding-top:4px; font-size:1.5rem;">
+                    <i ng-click="" class="fi-social-facebook grey-text text-lighten-1"></i>
+                    <i ng-click="" class="fi-social-twitter grey-text text-lighten-1"></i>
+                  </div>
+                  <div class="col s6 right-align" style="padding-top:4px">
+                    <i ng-click="confirmDelete('Update', item, post[0])" class="material-icons delete grey-text text-lighten-1">delete</i>
+                    <i ng-if="notMedia(item.message)" ng-click="setupUpdate(item, post[0].$id)" class="material-icons edit grey-text text-lighten-1">edit</i>
+                    <i class="material-icons grey-text text-lighten-1">share</i>
+                  </div>
+                </div>
+              </div>
+              <div class="separator-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ========================================= Small Showcase ========================================= -->
+    <div class="col s2 no-padding maincol">
+      <div class="row no-margin showcase-small" ng-repeat="story in userStories.created.concat(userStories.contributed) | unselectedStories:activeStoriesIDs | orderBy:'-last_time' | limitTo:20">
+        <div class="showcase-div-small" ng-click="MakeActive(story)" style="background-image: linear-gradient(rgba(233, 233, 233, 0),rgba(33, 33, 33, 0.3), rgba(33, 33, 33, 0.8)),url({{story.posts_picture}}); position:relative">
+          <!-- <span class="time badge teal lighten-3 white-text z-depth-1">{{story.last_time | date:"h:mm a" }}</span> -->
+          <span class="time badge {{diffTime(story.last_time)}} white-text z-depth-1 right" style="position:relative; right:5px;">{{story.last_time | relativeDate}}</span>
+          <br>
+          <span ng-if="showNewUpdates(story.$id)" class="time badge red lighten-1 white-text z-depth-1 right" style="position:relative; right:5px;">{{showNewUpdates(story.$id)}} new</span>
+          <h6 class="grey-text text-lighten-3 no-margin showcase-title" style="position:absolute; bottom: 15px; left: 10px">{{story.title}}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ================================================ MODALS ================================================ -->
+  <!-- **************** Delete Modal **************** -->
+  <form ng-submit="deleteItem()">
+    <div class="modal" id="deleteModal" style="max-width: 400px">
+      <div class="modal-content center-align">
+        <p class="grey-text text-darken-2" id="deleteModalLabel"><strong>Are you sure you want to delete this {{type}}?</strong></p>
+        <p class="red-text text-lighten-2" id=""><strong>THIS CANNOT BE UNDONE.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-action cancel modal-close waves-effect waves-green btn-flat" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="red white-text delete modal-action modal-close waves-effect lighten-1 waves-red btn-flat">Delete</button>
+      </div>
+    </div>
+  </form>
+  <!-- **************** Update Update Modal **************** -->
+  <div class="modal" id="updateModal">
+    <div class="modal-content">
+      <div class="view-sender">
+        <img ng-src="{{ updateToUpdate.profile_picture || 'https://livepostrocks.s3.amazonaws.com/default_user_profile.png' }}" class="profile-picture">
+        <p class="sender grey-text valign-wrapper">{{updateToUpdate.sender}}</p>
+      </div>
+      <div class="">
+        <div class="input-field" ng-if="updateToUpdate.message.indexOf('https://livepostrocks.s3.amazonaws.com/') == -1">
+          <textarea type="text" ng-model="updateToUpdate.message" class="msg flow-title materialize-textarea"></textarea>
+        </div>
+        <div ng-if="updateToUpdate.message.indexOf('https://livepostrocks.s3.amazonaws.com/images/') != -1" class="modal-media center">
+          <div class="media-overlay valign-wrapper"><i ng-click="" class="material-icons center white-text">delete</i></div>
+          <img ng-src="{{updateToUpdate.message}}" class="image center">
+        </div>
+        <div ng-if="updateToUpdate.message.indexOf('https://livepostrocks.s3.amazonaws.com/videos/') != -1" class="modal-media center">
+          <div class="media-overlay valign-wrapper"><i ng-click="" class="material-icons center white-text">delete</i></div>
+          <video class="video center" controls>
+            <source ng-src="{{trustSrc(updateToUpdate.message)}}">
+          </video>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="modal-action modal-close waves-effect waves-green btn-flat" data-dismiss="modal">Cancel</button>
+      <button type="button" class="white-text modal-action modal-close waves-effect blue lighten-2 waves-red btn-flat" ng-click="updateUpdate()">Update</button>
+    </div>
+  </div>
+  <!-- **************** Update Story Modal **************** -->
+  <div class="modal" id="updateStoryModal">
+    <div class="modal-content">
+      <div class="input-field">
+        <label for="storyTitleModal">Title</label>
+        <input id="storyTitleModal" type="text" ng-model="storyToUpdate.title" class="msg flow-title" style="padding-left: 15px; font-size: 1.7rem !important"></input>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="modal-action modal-close waves-effect waves-green btn-flat" data-dismiss="modal">Cancel</button>
+      <button type="button" class="white-text modal-action modal-close waves-effect blue lighten-2 waves-red btn-flat" ng-click="updateStory()">Update</button>
+    </div>
+  </div>
+  <!-- **************** Social Media Modal **************** -->
+  <div class="modal" id="socialMediaModal">
+    <div class="modal-content">
+      <h4 class="teal-text text-lighten-3 center-align">Link your social media accounts</h4>
+      <div class="container center-align" style="font-size:3rem">
+        <a href=""><i class="fi-social-facebook blue-text text-darken-1"></i></a> &nbsp;
+        <a href=""><i class="fi-social-twitter light-blue-text text-lighten-1"></i></a>
+      </div>
+    </div>
+  </div>
+  <!-- **************** Collaborators Modal **************** -->
+  <div id="collaboratorsModal" class="modal">
+    <div class="modal-content">
+      <h4 class="teal-text text-lighten-2 center-align">Collaborators</h4>
+      <div class="row">
+        <div class="input-field col s7">
+          <label for="newEmail">E-Mail:</label>
+          <input type="text" id="newEmail" ng-model="newMember.uid"></input>
+        </div>
+        <div class="input-field col s3 ">
+          <select id="selectRole" data-ng-model="newMember.role" material-select watch name="Role">
+            <option value="contributor" selected>Contributor</option>
+            <option value="administrator">Administrator</option>
+          </select>
+        </div>
+        <div class="input-field col s2">
+          <div ng-class="{'disabled': (!newMember.uid) || !newMember.role}" ng-click="addCollaborator()" class="btn-floating"><i class="material-icons">done</i></div>
+        </div>
+      </div>
+      <ul class="collection">
+        <li ng-repeat="person in collaborators" class="collection-item collaborators-li">
+          <a ng-click="removeCollaborator(person)" class="btn-floating secondary-content red lighten-1 collaborator-delete"><i class="material-icons center white-text">clear</i></a>
+          <!-- <span class="badge secondary-content grey white-text collaborator-badge">Offline</span> -->
+          <span class="title thick-text">{{person.uid}}</span>
+          <i class="material-icons teal-text text-lighten-2" style="position:relative; top:6px; margin-left: 5px">{{collaboratorRole(person.role)}}</i>
+        </li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <a class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+  </div>
+  <!-- ================================================ END OF MODALS ================================================ -->
+</div>
+<!-- <div class="footer-cont">
+        <div id="footer-post">
+            <a href="http://www.livepost.news/" target="_blank">
+                <img id="img-footer">
+            </a>
+        </div>
+    </div> -->

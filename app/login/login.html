@@ -1,0 +1,102 @@
+<!-- <nav class="red lighten-2">
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo"><img id="logo" src="images/logo-small.png" alt="LivePost" /></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="">Blog</a></li>
+        </ul>
+    </div>
+</nav> -->
+<div class="hide-on-large-only">
+    <br>
+    <br>
+    <div class="container">
+        <div class="container">
+            <div class="card">
+                <div class="card-image">
+                    <img src="https://simplybuiltprod.s3.amazonaws.com/media/2304/5FRF3xDy3865dd1KqDEkYQ.jpg" alt="OOPS!">
+                    <span class="card-title">OOPS! You need a bigger screen...</span>
+                </div>
+                <div class="card-content">
+                    <p>
+                        Our content managing platform will give you visibility of <strong>A LOT</strong> of information, and is thus optimized to work with larger screens. In order to use this right now we suggest you view this on a screen larger than 992px wide.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="hide-on-med-and-down">
+    <div class="container">
+        <div class="container">
+            <br>
+            <br>
+            <div class="card z-depth-0">
+                <div class="card-content">
+                    <img src="images/footer_logo_on.png" alt="LivePost!" class="center" />
+                    <br>
+                    <br>
+                    <div class="container">
+                        <form class="form-signin" role="form">
+                            <input ng-model="user.email" type="email" class="form-control" placeholder="Email address" required="" autofocus="">
+                            <input ng-model="user.password" type="password" class="form-control" placeholder="Password" required="">
+                            <br>
+                            <br>
+                            <div class="center" id="loginButtons">
+                                <a ng-click="SignIn($event)" class="btn" type="submit">Sign in</a>
+                                <br> – or –
+                                <br>
+                                <a ng-click="twitterSignIn()" class="btn light-blue" type="submit">
+                                    <i class="fi-social-twitter"></i> Sign in with Twitter
+                                </a>
+                                <br>
+                                <br>
+                                <a href="#"> Sign Up</a> &nbsp;|&nbsp;
+                                <a href="#"> Forgot your password?</a>
+                                <p style="color:red;" ng-show="authError">
+                                    {{regErrorMessage}}
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="row hide-on-med-and-down" id="login" style="height: 100%">
+    <div class="col s7 whte-text" id="login-img" style="height: 100%">
+      <div class="overlay" id="loginoverlay"></div>
+      <div class="white-text" id="logincaption">Create, visualize and manage stories in real-time with our <span id="punchline">Story Dashboard</span></div>
+    </div>
+    <div class="col s5 white z-depth-2">
+        <div class="margin-top-25p container center-align">
+          <ng-include src="'images/logo.html'"></ng-include>
+            <br>
+            <div class="container-85">
+                <form class="form-signin center-align" role="form">
+                    <i class="material-icons display-inline-block left">mail</i>
+                    <input ng-model="user.email" type="email" class="no-margin form-control display-inline-block" placeholder="Email address" required="" autofocus="">
+                    <i class="material-icons display-inline-block left">lock</i>
+                    <input ng-model="user.password" type="password" class="form-control display-inline-block" placeholder="Password" required="" style="">
+                    <br>
+                    <br>
+                    <div class="center" id="loginButtons">
+                        <a ng-click="SignIn($event)" class="btn" type="submit">Sign in</a>
+                        <br> – or –
+                        <br>
+                        <a ng-click="twitterSignIn()" class="btn light-blue" type="submit">
+                            <i class="fi-social-twitter"></i> Sign in with Twitter
+                        </a>
+                        <br>
+                        <br>
+                        <a class="thick-text" href="#"> Sign Up</a> &nbsp;|&nbsp;
+                        <a class="thick-text" href="#"> Forgot your password?</a>
+                        <p style="color:red;" ng-show="authError">
+                            {{regErrorMessage}}
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
